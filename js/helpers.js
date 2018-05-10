@@ -126,6 +126,7 @@ function calculaAvaliacaoComCutOff(board, player = 1){
 	let retorno = [0,[0,0],0]	
 	var mini = 1000
 	var maxi = [0]
+	var passa = false
 //separa peças em três vetores
 	   for (let i = 0; i < size; i++) {
                     for (let j = 0; j < size; j++) {
@@ -150,12 +151,18 @@ function calculaAvaliacaoComCutOff(board, player = 1){
 //alert("sequencia adversário"+ JSON.stringify(seqAdversario)+" length "+seqAdversario.length)
 
 //calculo do MAX
+	baseCalculo = jogador.slice();
+	seqCalculo = montaSequencia(baseCalculo, board)
+	retorno = funcaoAvaliacao(seqCalculo)
+	if(retorno[0] > 0){ maxi[0] = retorno[0]} else { retorno[0] = 0}
+	if(retorno[2] > maxi[0]){ maxi[0] = retorno[2]}
+
 while(jogada = brancas2.pop()){
 //	a = [[0,2],[0,3],[0,4]]
 //while(jogada = a.pop()){	
 	baseCalculo = jogador.slice();
 //	alert("jogada "+JSON.stringify(jogada))
-//if('[5,4]' == JSON.stringify(jogada)){ alert("base "+JSON.stringify(baseCalculo)+"jogada sendo analisada "+JSON.stringify(jogada)) }
+//alert("base "+JSON.stringify(baseCalculo)+"jogada sendo analisada "+JSON.stringify(jogada))
 	baseCalculo.unshift(jogada)
 //	alert("base "+JSON.stringify(baseCalculo))
 //if('[5,4]' == JSON.stringify(jogada)){alert("base mais jogada "+JSON.stringify(baseCalculo)+"jogada sendo analisada "+JSON.stringify(jogada))}
@@ -163,45 +170,22 @@ while(jogada = brancas2.pop()){
 //	alert("sequencia avaliada "+JSON.stringify(seqCalculo))
 //if('[5,4]' == JSON.stringify(jogada)){alert("sequencia montada "+JSON.stringify(seqCalculo))}
 	retorno = funcaoAvaliacao(seqCalculo)
-//alert("retornofuncao para ---"+JSON.stringify(retorno)+" com retorno 0 = "+retorno[0]+" e maxi 0 = "+JSON.stringify(maxi))
+//alert("retornofuncao para -JSON completo--"+JSON.stringify(retorno)+" com retorno 0 = "+retorno[0]+"retorno 2 = "+retorno[2]+" e maxi  = "+JSON.stringify(maxi))
 	//if('[0,2]' == JSON.stringify(jogada)){alert("retornofuncao para 0,2"+JSON.stringify(retorno))}
 if(retorno[0]>maxi[0]){
-//	alert("trocou maxi")
+	passa = true
 	maxi[0] = retorno[0]
 	maxi[1] = jogada
 //	alert(JSON.stringify(maxi))
 }
 if(retorno[2]>maxi[0]){
+	passa = true
 	maxi[0] = retorno[2]
 	maxi[1] = jogada
 }
 
 }
-
-// calculo da avaliacao do adversario
-//calculo do MAX
-
-	a = []
-while(jogada = a.pop()){	
-//while(jogada = brancas.pop()){
-	baseCalculo = adversario.slice();
-//if('[5,4]' == JSON.stringify(jogada)){ alert("base "+JSON.stringify(baseCalculo)+"jogada sendo analisada "+JSON.stringify(jogada)) }
-	baseCalculo.unshift(jogada)
-//if('[5,4]' == JSON.stringify(jogada)){alert("base mais jogada "+JSON.stringify(baseCalculo)+"jogada sendo analisada "+JSON.stringify(jogada))}
-	seqCalculo = montaSequencia(baseCalculo, board)
-//if('[5,4]' == JSON.stringify(jogada)){alert("sequencia montada "+JSON.stringify(seqCalculo))}
-	retorno = funcaoAvaliacao(seqCalculo)
-//	alert("retorno = "+JSON.stringify(retorno))
-//if('[5,4]' == JSON.stringify(jogada)){alert("retornofuncao"+JSON.stringify(retorno))}
-	while(seleciona = retorno.pop()){
-	alert("seleciona "+JSON.stringify(seleciona))
-	if(seleciona[0]>maxi[0]) { maxi = [seleciona]}
-		alert("maxi "+JSON.stringify(maxi))
-	}	
-}
-//alert("maxi "+JSON.stringify(maxi))
-if(maxi[0] > 0) { maxi[0] = -1; } else { maxi[0] = 0 }
-//alert("maxi incrementado "+JSON.stringify(maxi))
+if ((maxi[0] > 0) && (passa)) { maxi[0] = player}
 return maxi
 
 
